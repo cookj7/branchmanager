@@ -10,10 +10,13 @@ import BootstrapVue from 'bootstrap-vue'
 import App from './App'
 import router from './router'
 import store from './store'
+import VueLocalStorage from './plugins/localstorage/'
+
 
 // VueJS "fetch" library
 
 Vue.use(BootstrapVue)
+Vue.use(VueLocalStorage)
 
 /* eslint-disable no-new */
 new Vue({
@@ -23,5 +26,9 @@ new Vue({
   template: '<App/>',
   components: {
     App
+  },
+  created: function() {
+      //console.log('created')
+      //this.$store.dispatch('security/initialise')
   }
 })

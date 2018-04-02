@@ -18,6 +18,8 @@
 <script>
 import nav from '../_nav'
 import { Header as AppHeader, Sidebar, Aside as AppAside, Footer as AppFooter, Breadcrumb } from '../components/'
+import { EventBus } from '@/plugins/eventbus/'
+import { mapActions } from 'vuex'
 
 export default {
   name: 'full',
@@ -40,6 +42,19 @@ export default {
     list () {
       return this.$route.matched
     }
-  }
+  },
+    methods: {
+        ...mapActions({
+            logoutApi: 'security/logout'
+        })
+    },
+    created: function() {
+        EventBus.$on('security-logout', () => {
+            console.log('logging out')
+            this.logoutApi().then(() => {
+                this.$router.push('/security/login')
+            })
+        });
+    }
 }
 </script>

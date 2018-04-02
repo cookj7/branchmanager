@@ -10,13 +10,20 @@ export default
     },
     methods: {
         ...mapActions({
-            loginApi: 'security/login' // map `this.add()` to `this.$store.dispatch('increment')`
+            loginApi: 'security/login'
         }),
         login: function () {
-            this.loginApi().then(() => {
-                console.log('yo', this.user)
+            this.loginApi({
+                username: 'jcook',
+                password: 'zxdfcv45'
+            }).then(() => {
+                let redirectUrl = this.$route.query.redirect || '/dashboard'
+                this.$router.push(redirectUrl);
             })
         }
+    },
+    created: function() {
+
     },
     name: 'Login'
 }

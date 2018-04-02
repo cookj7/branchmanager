@@ -3,10 +3,11 @@ import getters from './getters';
 import mutations from './mutations';
 
 const state = {
-    user: {
-        logged: false,
-        token: '',
-    },
+    initialised: false,
+    logged: false,
+    user: {},
+    permissions: {},
+    branches: {}
 };
 
 export default {
