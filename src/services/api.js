@@ -34,8 +34,8 @@ class ApiClass {
         return axios.post(this.host + route, data).then((response) => response.data)
     }
 
-    get (route, params) {
-
+    get (route, data = {}) {
+        return axios.get(this.host + route, {params: data}).then((response) => response.data)
     }
 }
 

@@ -12,7 +12,6 @@ import router from './router'
 import store from './store'
 import VueLocalStorage from './plugins/localstorage/'
 
-
 // VueJS "fetch" library
 
 Vue.use(BootstrapVue)
@@ -25,7 +24,7 @@ new Vue({
   router,
   template: '<App/>',
   components: {
-    App
+    App,
   },
   created: function() {
       //console.log('created')

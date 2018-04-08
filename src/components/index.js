@@ -5,13 +5,15 @@ import Footer from './Footer.vue'
 import Header from './Header/Header.vue'
 import Sidebar from './Sidebar/Sidebar.vue'
 import Switch from './Switch.vue'
+import Loader from './Utility/Loader.vue'
 
 export {
-  Aside,
-  Breadcrumb,
-  Callout,
-  Footer,
-  Header,
-  Sidebar,
-  Switch
+    Aside,
+    Breadcrumb,
+    Callout,
+    Footer,
+    Header,
+    Sidebar,
+    Switch,
+    Loader,
 }

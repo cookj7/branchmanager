@@ -11,7 +11,7 @@ import Full from '@/containers/Full'
 import Dashboard from '@/views/Dashboard'
 
 // Views - vanhire
-import { VanhireDashboard, VanhireCheckin, VanhireCheckout, VanhireRefund } from '@/views/vanhire'
+import { VanhireDashboard, VanhireCheckin, VanhireCheckinItem, VanhireCheckout, VanhireCheckoutItem, VanhireRefund, VanhireRefundItem } from '@/views/vanhire'
 
 // Views - compliance
 import { ComplianceDashboard, ComplianceApproveDocuments, ComplianceApproveRefund, ComplianceApproveDocumentItem } from '@/views/compliance'
@@ -61,14 +61,29 @@ const router = new Router({
                             component: VanhireCheckin
                         },
                         {
+                            path: 'checkin/:id',
+                            name: 'Checkin Item',
+                            component: VanhireCheckinItem
+                        },
+                        {
                             path: 'checkout',
                             name: 'Checkout',
                             component: VanhireCheckout
                         },
                         {
+                            path: 'checkout/:id',
+                            name: 'Checkout Item',
+                            component: VanhireCheckoutItem
+                        },
+                        {
                             path: 'refund',
                             name: 'Refund',
                             component: VanhireRefund
+                        },
+                        {
+                            path: 'refund/:id',
+                            name: 'Refund Item',
+                            component: VanhireRefundItem
                         },
                     ]
                 },
@@ -161,7 +176,6 @@ router.beforeEach((to, from, next) => {
     // security route
     if (!to.matched.some(record => record.meta.anonymous)) {
         if (store.getters['security/initialised'] !== true) {
-            console.log('initialising ... ')
             store.dispatch('security/initialise')
         }
 
