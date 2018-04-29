@@ -30,6 +30,10 @@ class ApiClass {
         return axios.request(config)
     }
 
+    put (route, data) {
+        return axios.put(this.host + route, data).then((response) => response.data)
+    }
+
     post (route, data) {
         return axios.post(this.host + route, data).then((response) => response.data)
     }

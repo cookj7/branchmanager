@@ -11,23 +11,32 @@ import App from './App'
 import router from './router'
 import store from './store'
 import VueLocalStorage from './plugins/localstorage/'
+import VeeValidate from 'vee-validate';
+import DatePicker from 'vue2-datepicker';
 
-// VueJS "fetch" library
+Vue.use(DatePicker);
 
+// Add bootstrap vue
 Vue.use(BootstrapVue)
+
+// add validation library
+Vue.use(VeeValidate, { fieldsBagName: 'veeFields' });
+
+// Add local-storage
 Vue.use(VueLocalStorage)
+
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  store: store,
-  router,
-  template: '<App/>',
-  components: {
-    App,
-  },
-  created: function() {
-      //console.log('created')
-      //this.$store.dispatch('security/initialise')
-  }
+    el: '#app',
+    store: store,
+    router,
+    template: '<App/>',
+    components: {
+        App,
+    },
+    created: function () {
+        //console.log('created')
+        //this.$store.dispatch('security/initialise')
+    }
 })

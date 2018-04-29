@@ -63,7 +63,8 @@ const router = new Router({
                         {
                             path: 'checkin/:id',
                             name: 'Checkin Item',
-                            component: VanhireCheckinItem
+                            component: VanhireCheckinItem,
+                            props: true
                         },
                         {
                             path: 'checkout',
@@ -73,7 +74,8 @@ const router = new Router({
                         {
                             path: 'checkout/:id',
                             name: 'Checkout Item',
-                            component: VanhireCheckoutItem
+                            component: VanhireCheckoutItem,
+                            props: true
                         },
                         {
                             path: 'refund',

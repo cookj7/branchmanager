@@ -1,1 +1,8 @@
-// Here you can add other styles
+//Extension for datetime picker error display
+.mx-datepicker {
+  &.is-invalid {
+    input {
+      border-color: #dc3545;
+    }
+  }
+}
