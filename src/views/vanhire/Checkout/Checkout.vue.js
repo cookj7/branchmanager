@@ -4,51 +4,71 @@ export default {
     name: 'vanhire-checkout',
     data: function() {
         return {
-            items: [
-                {"basket_id":"11183","b_forename":"TEST","b_surname":"TEST","b_postcode":"CB21","b_address1":"1","b_address2":"88","created":"1507468588","pickup":"1507534200","dropoff":"1507534200"},
-                {"basket_id":"11185","b_forename":"TEST","b_surname":"TEST","b_postcode":"CB21","b_address1":"1","b_address2":"88","created":"1507471563","pickup":"1507534200","dropoff":"1507534200"},
-                {"basket_id":"11184","b_forename":"TEST","b_surname":"TEST","b_postcode":"CB21","b_address1":"1","b_address2":"88","created":"1507471345","pickup":"1507620600","dropoff":"1507620600"},
-                {"basket_id":"11193","b_forename":"TEST","b_surname":"TEST","b_postcode":"CB21","b_address1":"1","b_address2":"88","created":"1508000189","pickup":"1508311800","dropoff":"1508311800"},
-            ],
-            fields: [
-                {key: 'basket_id', label: 'Order Reference'},
-                {key: 'name'},
-                {key: 'b_forename', label: 'Forename'},
-                {key: 'b_surname', label: 'Surname'},
-                {key: 'b_postcode', label: 'Postcode'}
-            ],
-            currentPage: 1,
-            perPage: 5,
-            totalRows: 0,
+            pending: {
+                sortBy: 'v_start',
+                sortDesc: true,
+                items: [
+                ],
+                fields: [
+                    {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'name', sortable: true},
+                    {key: 'v_start', label: 'start', sortable: true},
+                    {key: 'v_end', label: 'end', sortable: true},
+                    {key: 'v_postcode', label: 'Postcode', sortable: true}
+                ],
+                currentPage: 1,
+                perPage: 5,
+                totalRows: 0,
+            },
+            active: {
+                sortBy: 'v_start',
+                sortDesc: true,
+                items: [
+                ],
+                fields: [
+                    {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'name', sortable: true},
+                    {key: 'v_start', label: 'start', sortable: true},
+                    {key: 'v_end', label: 'end', sortable: true},
+                    {key: 'v_postcode', label: 'Postcode', sortable: true}
+                ],
+                currentPage: 1,
+                perPage: 5,
+                totalRows: 0,
+            },
         }
     },
     methods: {
-        getBadge (status) {
-            return status === 'Active' ? 'success'
-                : status === 'Inactive' ? 'secondary'
-                : status === 'Pending' ? 'warning'
-                : status === 'Banned' ? 'danger' : 'primary'
+        view (record) {
+            if (!record && !record.vanhire_id) {
+                return;
+            }
+
+            if (record.vanhire_state_id == 20) {
+                this.$router.push('/vanhire/' + record.vanhire_id + '/checkout/edit');
+            } else {
+                this.$router.push('/vanhire/' + record.vanhire_id + '/checkout');
+            }
         },
-        getRowCount (items) {
-            return items.length
-        },
-        myProvider (ctx) {
-            // Here we don't set isBusy prop, so busy state will be handled by table itself
-            // this.isBusy = true
-            let promise = api.get('/vanhire/checkin/awaiting', {results_per_page: this.perPage, current_page: this.currentPage})
+        findPending (ctx) {
+            let promise = api.get('/vanhire/list', {results_per_page: this.pending.perPage, current_page: this.pending.currentPage, state: 10, sort: this.pending.sortBy, desc: this.pending.sortDesc ? 1 : 0})
 
             return promise.then((data) => {
-
-                console.log(data)
                 const items = data.items
-                this.totalRows = parseInt(data.pages.total)
-                // Here we could override the busy state, setting isBusy to false
-                // this.isBusy = false
+                this.pending.totalRows = parseInt(data.pages.total)
                 return(items)
             }).catch(error => {
-                // Here we could override the busy state, setting isBusy to false
-                // this.isBusy = false
-                // Returning an empty array, allows table to correctly handle busy state in case of error
+                return []
+            })
+        },
+        findActive (ctx) {
+            let promise = api.get('/vanhire/list', {results_per_page: this.active.perPage, current_page: this.active.currentPage, state: 20, sort: this.active.sortBy, desc: this.active.sortDesc ? 1 : 0})
+
+            return promise.then((data) => {
+                const items = data.items
+                this.active.totalRows = parseInt(data.pages.total)
+                return(items)
+            }).catch(error => {
                 return []
             })
         }

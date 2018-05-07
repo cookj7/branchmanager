@@ -27,6 +27,7 @@ export default {
                 {text: 'OK',value: 1},
                 {text: 'Not OK ',value: 0},
             ],
+            vanhire_pristine: null,
             vans: [],
             vanhire: {
                 v_email: '',
@@ -93,8 +94,6 @@ export default {
             items.push({information: 'Check-out date/time: ', value: this.vanhire.v_start});
             items.push({information: 'Expected check-in date/time: ', value: this.vanhire.v_end});
 
-            items.push({information: 'Sat. Nav.', value: this.checkout.vc_satnav == 1 ? 'YES' : 'NO'});
-
             items.push({information: 'Condition of vehicle bodywork, windscreen, windows, lights', value: this.checkout.vc_condition_body});
             items.push({information: 'Condition of vehicle windscreen wiper blades', value: this.checkout.vc_condition_wipers});
             items.push({information: 'Cleanliness of windscreen, windows mirrors, lights', value: this.checkout.vc_condition_windscreen});
@@ -136,6 +135,13 @@ export default {
                     }
                 });
 
+                this.vanhire_pristine = vanhire;
+
+                if (!vanhire.vanhire_state_id || vanhire.vanhire_state_id < 10) {
+                    throw "Van hire has not passed approval";
+                }
+
+
                 if (!!vanhire.checkout) {
                     this.request.completed = true;
                     Object.keys(this.checkout).forEach((key) => {
@@ -148,6 +154,30 @@ export default {
 
                 return vanhire
             })
+        },
+
+        reset: function() {
+            Object.keys(this.vanhire).forEach((key) => {
+                if (key in this.vanhire_pristine) {
+                    this.vanhire[key] = this.vanhire_pristine[key];
+                }
+            });
+
+            this.checkout.vc_condition_body = '';
+            this.checkout.vc_condition_wipers = '';
+            this.checkout.vc_condition_windscreen = '';
+            this.checkout.vc_condition_tyres = '';
+            this.checkout.vc_condition_sparewheel = '';
+            this.checkout.vc_condition_taillift = '';
+            this.checkout.vc_oil_level = 1;
+            this.checkout.vc_coolant_level = 1;
+            this.checkout.vc_screenwash_level = 1;
+            this.checkout.vc_brake_fluid = 1;
+            this.checkout.vc_powersteering_fluid = 1;
+            this.checkout.vc_battery_condition = 1;
+            this.checkout.vc_oil_water_leaks = 1;
+            this.checkout.vc_toolkit = 1;
+            this.checkout.vc_satnav = 1;
         },
 
         validate: async function() {

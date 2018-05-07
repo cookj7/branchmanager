@@ -18,7 +18,7 @@
 
                             </div>
                             <p>
-                                The customer van hire checkout has been successully completed.
+                                The customer van hire checkout has been successfully completed.
                             </p>
 
                             <b-table small hover striped :items="summaryItems" :fields="summaryFields"></b-table>
@@ -534,7 +534,7 @@
                                 </b-alert>
                                 <loader :loading="request.saving" message="Creating checkout ..."></loader>
                                 <b-button type="submit" size="sm" variant="primary" @click.prevent="createCheckout()" v-show="!request.saving"><i class="fa fa-dot-circle-o"></i> Checkout Now</b-button>
-                                <b-button type="reset" size="sm" variant="danger" v-show="!request.saving"><i class="fa fa-ban"></i> Reset</b-button>
+                                <b-button type="reset" size="sm" variant="danger" @click.prevent="reset()" v-show="!request.saving"><i class="fa fa-ban"></i> Reset</b-button>
 
                             </div>
                         </b-card>

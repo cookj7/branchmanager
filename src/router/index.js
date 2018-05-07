@@ -61,8 +61,14 @@ const router = new Router({
                             component: VanhireCheckin
                         },
                         {
-                            path: 'checkin/:id',
+                            path: ':id/checkin',
                             name: 'Checkin Item',
+                            component: VanhireCheckinItem,
+                            props: true
+                        },
+                        {
+                            path: ':id/checkin/:cid',
+                            name: 'Edit Checkin Item',
                             component: VanhireCheckinItem,
                             props: true
                         },
@@ -72,8 +78,14 @@ const router = new Router({
                             component: VanhireCheckout
                         },
                         {
-                            path: 'checkout/:id',
+                            path: ':id/checkout',
                             name: 'Checkout Item',
+                            component: VanhireCheckoutItem,
+                            props: true
+                        },
+                        {
+                            path: ':id/checkout/:cid',
+                            name: 'Edit Checkout Item',
                             component: VanhireCheckoutItem,
                             props: true
                         },
@@ -83,9 +95,10 @@ const router = new Router({
                             component: VanhireRefund
                         },
                         {
-                            path: 'refund/:id',
+                            path: ':id/refund',
                             name: 'Refund Item',
-                            component: VanhireRefundItem
+                            component: VanhireRefundItem,
+                            props: true
                         },
                     ]
                 },
