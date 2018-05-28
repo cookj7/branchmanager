@@ -19,6 +19,9 @@ import { ComplianceDashboard, ComplianceApproveDocuments, ComplianceApproveRefun
 // Views - compliance
 import { AccountDashboard } from '@/views/account'
 
+// Views - assets
+import { AssetsDashboard, VanInventory, UserInventory } from '@/views/assets'
+
 // security pages
 import Login from '@/views/security/Login/Login.vue'
 import Page404 from '@/views/security/Page404'
@@ -52,7 +55,7 @@ const router = new Router({
                     children: [
                         {
                             path: 'dashboard',
-                            name: 'VanhireDashboard',
+                            name: 'Dashboard',
                             component: VanhireDashboard
                         },
                         {
@@ -112,7 +115,7 @@ const router = new Router({
                     children: [
                         {
                             path: 'dashboard',
-                            name: 'Compliance Dashboard',
+                            name: 'Dashboard',
                             component: ComplianceDashboard
                         },
                         {
@@ -130,6 +133,32 @@ const router = new Router({
                             path: 'approve-refund',
                             name: 'Approve Refund',
                             component: ComplianceApproveRefund
+                        },
+                    ]
+                },
+                {
+                    path: 'assets',
+                    redirect: '/assets/dashboard',
+                    name: 'Assets',
+                    component: {
+                        render (c) { return c('router-view') }
+                    },
+                    children: [
+                        {
+                            path: 'dashboard',
+                            name: 'Dashboard',
+                            component: AssetsDashboard
+                        },
+                        {
+                            path: 'vans',
+                            name: 'Vans',
+                            component: VanInventory
+                        },
+                        {
+                            path: 'users',
+                            name: 'Users',
+                            props: true,
+                            component: UserInventory
                         },
                     ]
                 },

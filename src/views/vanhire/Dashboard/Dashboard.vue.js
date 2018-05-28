@@ -71,6 +71,9 @@ export default {
         }
     },
     methods: {
+        category(name) {
+            this.$router.push('/vanhire/' + name)
+        },
         view (record) {
             if (!record && !record.vanhire_id) {
                 return;

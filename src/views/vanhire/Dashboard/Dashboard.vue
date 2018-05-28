@@ -1,6 +1,48 @@
 <template>
     <div class="animated fadeIn">
         <b-row>
+            <b-col sm="6" md="3">
+                <b-card @click.prevent="category('checkout')" class="cursor-pointer">
+                    <div class="h1 text-muted text-right mb-4">
+                        <i class="fa fa-chevron-circle-right"></i>
+                    </div>
+                    <div class="h4 mb-0">{{ checkout.totalRows }}</div>
+                    <small class="text-muted text-uppercase font-weight-bold">Awaiting Check-out</small>
+                    <b-progress height={} class="progress-xs mt-3 mb-0" variant="warning" :value="100"/>
+                </b-card>
+            </b-col>
+            <b-col sm="6" md="3">
+                <b-card @click.prevent="category('checkin')" class="cursor-pointer">
+                    <div class="h1 text-muted text-right mb-4">
+                        <i class="fa fa-chevron-circle-left"></i>
+                    </div>
+                    <div class="h4 mb-0">{{ checkin.totalRows }}</div>
+                    <small class="text-muted text-uppercase font-weight-bold">Awaiting Check-in</small>
+                    <b-progress height={} class="progress-xs mt-3 mb-0" variant="info" :value="100"/>
+                </b-card>
+            </b-col>
+            <b-col sm="6" md="3">
+                <b-card @click.prevent="category('refund')" class="cursor-pointer">
+                    <div class="h1 text-muted text-right mb-4">
+                        <i class="icon-calculator"></i>
+                    </div>
+                    <div class="h4 mb-0">{{ refund.totalRows }}</div>
+                    <small class="text-muted text-uppercase font-weight-bold">Awaiting Refund</small>
+                    <b-progress height={} class="progress-xs mt-3 mb-0" variant="danger" :value="100"/>
+                </b-card>
+            </b-col>
+            <b-col sm="6" md="3">
+                <b-card @click.prevent="category('complete')" class="cursor-pointer">
+                    <div class="h1 text-muted text-right mb-4">
+                        <i class="icon-check"></i>
+                    </div>
+                    <div class="h4 mb-0">{{ completed.totalRows }}</div>
+                    <small class="text-muted text-uppercase font-weight-bold">Completed</small>
+                    <b-progress height={} class="progress-xs mt-3 mb-0" variant="success" :value="100"/>
+                </b-card>
+            </b-col>
+        </b-row>
+        <b-row>
             <b-col>
                 <b-card header="Awaiting Check-out" class="card-accent-warning">
                     <p>

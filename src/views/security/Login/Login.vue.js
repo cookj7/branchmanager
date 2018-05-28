@@ -2,6 +2,12 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default
 {
+    data: () => {
+        return {
+            username: '',
+            password: ''
+        }
+    },
     computed: {
         // mix the getters into computed with object spread operator
         ...mapGetters({
@@ -14,9 +20,9 @@ export default
         }),
         login: function () {
             this.loginApi({
-                username: 'jcook',
-                password: 'zxdfcv45'
-            }).then(() => {
+                username: this.username,
+                password: this.password,
+            }).then((user) => {
                 let redirectUrl = this.$route.query.redirect || '/dashboard'
                 this.$router.push(redirectUrl);
             })

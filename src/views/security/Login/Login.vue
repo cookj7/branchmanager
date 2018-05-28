@@ -13,13 +13,13 @@
                                     <b-input-group-prepend>
                                         <b-input-group-text><i class="icon-user"></i></b-input-group-text>
                                     </b-input-group-prepend>
-                                    <input type="text" class="form-control" placeholder="Username">
+                                    <input type="text" v-model="username" class="form-control" placeholder="Username">
                                 </b-input-group>
                                 <b-input-group class="mb-4">
                                     <b-input-group-prepend>
                                         <b-input-group-text><i class="icon-lock"></i></b-input-group-text>
                                     </b-input-group-prepend>
-                                    <input type="password" class="form-control" placeholder="Password">
+                                    <input type="password" v-model="password" class="form-control" placeholder="Password">
                                 </b-input-group>
                                 <b-row>
                                     <b-col cols="6">

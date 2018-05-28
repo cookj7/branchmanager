@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '../store'
 
 class ApiClass {
     host = ''
@@ -39,7 +40,18 @@ class ApiClass {
     }
 
     get (route, data = {}) {
-        return axios.get(this.host + route, {params: data}).then((response) => response.data)
+        return axios.get(this.host + route, {params: data, headers: this.prepareHeaders()}).then((response) => response.data)
+    }
+
+    prepareHeaders() {
+        let user = store.getters['security/user'];
+        if (!user || !user.u_token) {
+            return {};
+        }
+
+        return {
+            Authorization: 'Bearer ' + user.u_token,
+        };
     }
 }
 

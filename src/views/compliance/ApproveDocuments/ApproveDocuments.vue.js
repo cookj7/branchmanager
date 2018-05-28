@@ -1,3 +1,5 @@
+import api from '@/services/api'
+
 export default {
     name: 'compliance-approve-documents',
     methods: {
@@ -9,41 +11,51 @@ export default {
         },
         getRowCount (items) {
             return items.length
+        },
+        view (record) {
+            if (!record && !record.vanhire_id) {
+                return;
+            }
+
+            this.$router.push('/compliance/approve-documents/' + record.vanhire_id);
+        },
+        findApproval (ctx) {
+            let promise = api.get('/vanhire/list', {results_per_page: this.approval.perPage, current_page: this.approval.currentPage, documents: true, sort: this.approval.sortBy, desc: this.approval.sortDesc ? 1 : 0})
+
+            return promise.then((data) => {
+                const items = data.items
+                this.approval.totalRows = parseInt(data.pages.total)
+                return(items)
+            }).catch(error => {
+                return []
+            })
         }
     },
     data: () => {
         return {
+            approval: {
+                sortBy: 'v_start',
+                sortDesc: true,
+                items: [
+                ],
+                fields: [
+                    {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'name', sortable: true},
+                    {key: 'v_start', label: 'start', sortable: true},
+                    {key: 'v_end', label: 'end', sortable: true},
+                    {key: 'v_postcode', label: 'Postcode', sortable: true}
+                ],
+                currentPage: 1,
+                perPage: 5,
+                totalRows: 0,
+            },
             items: [
-                {username: 'Samppa Nori', registered: '2012/01/01', role: 'Member', status: 'Active'},
-                {username: 'Estavan Lykos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-                {username: 'Chetan Mohamed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-                {username: 'Derick Maximinus', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-                {username: 'Friderik Dávid', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-                {username: 'Yiorgos Avraamu', registered: '2012/01/01', role: 'Member', status: 'Active'},
-                {username: 'Avram Tarasios', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-                {username: 'Quintin Ed', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-                {username: 'Enéas Kwadwo', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-                {username: 'Agapetus Tadeáš', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-                {username: 'Carwyn Fachtna', registered: '2012/01/01', role: 'Member', status: 'Active'},
-                {username: 'Nehemiah Tatius', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-                {username: 'Ebbe Gemariah', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-                {username: 'Eustorgios Amulius', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-                {username: 'Leopold Gáspár', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-                {username: 'Pompeius René', registered: '2012/01/01', role: 'Member', status: 'Active'},
-                {username: 'Paĉjo Jadon', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-                {username: 'Micheal Mercurius', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-                {username: 'Ganesha Dubhghall', registered: '2012/03/01', role: 'Member', status: 'Pending'},
-                {username: 'Hiroto Šimun', registered: '2012/01/21', role: 'Staff', status: 'Active'},
-                {username: 'Vishnu Serghei', registered: '2012/01/01', role: 'Member', status: 'Active'},
-                {username: 'Zbyněk Phoibos', registered: '2012/02/01', role: 'Staff', status: 'Banned'},
-                {username: 'Einar Randall', registered: '2012/02/01', role: 'Admin', status: 'Inactive'},
-                {username: 'Félix Troels', registered: '2012/03/21', role: 'Staff', status: 'Active'},
-                {username: 'Aulus Agmundr', registered: '2012/01/01', role: 'Member', status: 'Pending'}
+
             ],
             fields: [
-                {key: 'username'},
-                {key: 'registered'},
-                {key: 'role'},
+                {key: 'name'},
+                {key: 'start', label: 'Hire Date'},
+                {key: 'branch'},
                 {key: 'status'}
             ],
             currentPage: 1,

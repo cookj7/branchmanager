@@ -67,6 +67,28 @@ export default {
                 },
             ]
         },
+        {
+            name: 'Assets',
+            url: '/assets',
+            icon: 'fa fa-list-alt',
+            children: [
+                {
+                    name: 'Dashboard',
+                    url: '/assets/dashboard',
+                    icon: 'icon-speedometer'
+                },
+                {
+                    name: 'Vans',
+                    url: '/assets/vans',
+                    icon: 'fa fa-truck'
+                },
+                {
+                    name: 'Users',
+                    url: '/assets/users',
+                    icon: 'fa fa-address-book-o'
+                },
+            ]
+        },
 
         {
             title: true,
