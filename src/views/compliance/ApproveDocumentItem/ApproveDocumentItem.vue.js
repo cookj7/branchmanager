@@ -1,5 +1,6 @@
 import { Loader } from '@/components/'
 import api from '@/services/api'
+import { mapGetters } from 'vuex'
 
 export default {
     name: 'compliance-approve-document-item',
@@ -41,15 +42,18 @@ export default {
         }
     },
     computed: {
+        ...mapGetters({
+            user: 'security/user'
+        }),
         summaryItems: function() {
             let items = [];
-
+            console.log(this.vanhire);
             items.push({information: 'Name: ', value: this.vanhire.v_forename + ' ' + this.vanhire.v_surname});
             items.push({information: 'Email: ', value: this.vanhire.v_email});
             items.push({information: 'Address: ', value: (this.vanhire.v_address1 + ' ' + this.vanhire.v_address2 + ', ' + this.vanhire.v_address3 +  ', ' + this.vanhire.v_address4 + ', ' + this.vanhire.v_postcode).replace(/([,][ ]?)+/g, ', ')});
             items.push({information: 'Telephone (primary): ', value: this.vanhire.v_telephone1});
             items.push({information: 'Telephone (secondary): ', value: this.vanhire.v_telephone2});
-            items.push({information: 'Date of birth: ', value: this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1')});
+            items.push({information: 'Date of birth: ', value: !!this.vanhire.v_dob ? this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1') : ''});
             items.push({information: 'License: ', value: this.vanhire.v_license});
             items.push({information: 'Check-out date/time: ', value: this.vanhire.v_start});
             items.push({information: 'Expected check-in date/time: ', value: this.vanhire.v_end});
@@ -89,10 +93,10 @@ export default {
             return !!item.status && item.status.id == 200;
         },
         getDownloadUrl(item) {
-            return process.env.API_HOST + '/vanhire/' + this.vanhireId + '/document/' + item.id + '/download';
+            return process.env.API_HOST + '/vanhire/' + this.vanhireId + '/document/' + item.id + '/download?token=' + this.user.u_token;
         },
         getViewUrl(item) {
-            return process.env.API_HOST + '/vanhire/' + this.vanhireId + '/document/' + item.id + '/download?inline=true';
+            return process.env.API_HOST + '/vanhire/' + this.vanhireId + '/document/' + item.id + '/download?inline=true&token=' + this.user.u_token;
         },
         setStatus(document, type) {
             const reject = type === 'reject';
