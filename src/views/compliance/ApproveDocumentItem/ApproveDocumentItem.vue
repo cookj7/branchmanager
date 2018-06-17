@@ -22,6 +22,11 @@
 
                         <b-table small striped :items="summaryItems" :fields="summaryFields"></b-table>
 
+                        <div slot="footer">
+                            <b-btn v-if="1 == vanhire.vanhire_state_id" variant="success" @click.stop="approveBooking"><i class="fa fa-warning"></i> Approve Booking</b-btn>
+                            <b-btn v-if="10 == vanhire.vanhire_state_id" variant="warning" @click.stop="revertApproveBooking"><i class="fa fa-undo"></i> Revert Approval</b-btn>
+                        </div>
+
                     </b-card>
                 </b-col>
             </b-row>

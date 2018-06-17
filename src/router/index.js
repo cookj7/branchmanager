@@ -103,6 +103,12 @@ const router = new Router({
                             component: VanhireRefundItem,
                             props: true
                         },
+                        {
+                            path: ':id/refund/:cid',
+                            name: 'Refund Item',
+                            component: VanhireRefundItem,
+                            props: true
+                        },
                     ]
                 },
                 {

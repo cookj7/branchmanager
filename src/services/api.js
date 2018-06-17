@@ -32,15 +32,28 @@ class ApiClass {
     }
 
     put (route, data) {
-        return axios.put(this.host + route, data).then((response) => response.data)
+        return axios
+            .put(this.host + route, data, {headers: this.prepareHeaders()})
+            .then((response) => response.data)
     }
 
     post (route, data) {
-        return axios.post(this.host + route, data).then((response) => response.data)
+        return axios
+            .post(this.host + route, data, {headers: this.prepareHeaders()})
+            .then((response) => response.data)
     }
 
     get (route, data = {}) {
-        return axios.get(this.host + route, {params: data, headers: this.prepareHeaders()}).then((response) => response.data)
+        return axios
+            .get(this.host + route, {params: data, headers: this.prepareHeaders()})
+            .then((response) => response.data)
+            .catch((error) => {
+                if (error.response && error.response.status && 401 === parseInt(error.response.status)) {
+                    store.dispatch('security/destroy');
+                    this.$router.push('/login');
+                }
+                throw error;
+            });
     }
 
     prepareHeaders() {

@@ -29,8 +29,13 @@ const logout = (context) => {
     })
 };
 
+const destroy = (context) => {
+    context.commit('USER_LOGOUT');
+};
+
 export default {
     initialise,
     login,
     logout,
+    destroy,
 };

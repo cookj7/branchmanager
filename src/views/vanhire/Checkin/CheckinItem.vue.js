@@ -10,12 +10,16 @@ export default {
         summaryItems: function() {
             let items = [];
 
+            let dob = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+            let start = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+            let end = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+
             items.push({information: 'Name: ', value: this.vanhire.v_forename + ' ' + this.vanhire.v_surname});
             items.push({information: 'Email: ', value: this.vanhire.v_email});
             items.push({information: 'Address: ', value: (this.vanhire.v_address1 + ' ' + this.vanhire.v_address2 + ', ' + this.vanhire.v_address3 +  ', ' + this.vanhire.v_address4 + ', ' + this.vanhire.v_postcode).replace(/([,][ ]?)+/g, ', ')});
             items.push({information: 'Telephone (primary): ', value: this.vanhire.v_telephone1});
             items.push({information: 'Telephone (secondary): ', value: this.vanhire.v_telephone2});
-            items.push({information: 'Date of birth: ', value: this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1')});
+            items.push({information: 'Date of birth: ', value: dob});
             items.push({information: 'License: ', value: this.vanhire.v_license});
             items.push({information: 'License confirmed', value: this.vanhire.v_license_confirmed == 1 ? 'YES' : 'NO'});
             const van = this.vans.find((item) => item.value === this.vanhire.vanhire_van_id);
@@ -24,10 +28,11 @@ export default {
             }
             items.push({information: 'Leaving vehicle: ', value: this.vanhire.v_leaving_vehicle == 1 ? 'Yes (' + this.vanhire.v_customer_reg + ')' : 'No'});
             items.push({information: 'Deposit: ', value: '£' + this.vanhire.v_deposit.toLocaleString('en-gb')});
-            items.push({information: 'Check-out date/time: ', value: this.vanhire.v_start});
-            items.push({information: 'Check-in date/time (expected): ', value: this.vanhire.v_end});
+            items.push({information: 'Check-out date/time: ', value: start});
+            items.push({information: 'Check-in date/time (expected): ', value: end});
             if (!!this.request.completed) {
-                items.push({information: 'Check-in date/time (actual): ', value: this.checkin.v_end_actual});
+                let endActual = this.vanhire.v_end_actual instanceof Date ? moment(this.vanhire.v_end_actual).format('YYYY-MM-DD') : this.vanhire.v_end_actual.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+                items.push({information: 'Check-in date/time (actual): ', value: endActual});
                 items.push({information: 'Condition of vehicle bodywork, windscreen, windows, lights', value: this.checkin.vc_condition_body});
                 items.push({information: 'Condition of vehicle windscreen wiper blades', value: this.checkin.vc_condition_wipers});
                 items.push({information: 'Cleanliness of windscreen, windows mirrors, lights', value: this.checkin.vc_condition_windscreen});
@@ -93,6 +98,7 @@ export default {
                 v_deposit: 0,
                 v_start: '',
                 v_end: '',
+                v_end_actual: '',
             },
             checkout: {
                 vc_condition_body: '',
@@ -112,7 +118,6 @@ export default {
                 vc_satnav: 1,
             },
             checkin: {
-                v_end_actual: '',
                 vc_condition_body: '',
                 vc_condition_wipers: '',
                 vc_condition_windscreen: '',
@@ -136,7 +141,7 @@ export default {
             this.errors.clear();
 
             return this.$validator.validate('*').then((result) => {
-                if (!this.vanhire.v_end) {
+                if (!this.vanhire.v_end_actual) {
                     this.errors.add('v_end_actual', 'You must enter the actual return date/time for the vehicle');
                     result = false;
                 }
@@ -152,7 +157,7 @@ export default {
             });
         },
 
-        scrollToFirstError() {
+        scrollToFirstError(message='') {
             Vue.nextTick(() => {
                 let element = document.querySelector('.is-invalid');
                 if (!element) {
@@ -166,11 +171,18 @@ export default {
                     top: domRect.top + document.documentElement.scrollTop - 60,
                     behavior: "smooth"
                 });
+
+                this.$toastr.e("There are " + this.errors.count() + " errors detected in the form - please update and retry.");
+                if (!!message) {
+                    this.$toastr.e("Error: " + message);
+                }
             })
         },
 
         saveCheckin: async function() {
-            return api.post('/vanhire/' + this.vanhireId + '/checkin/create', this.checkin).then((result) => {
+            let data = this.checkin;
+            data.v_end_actual = this.vanhire.v_end_actual;
+            return api.post('/vanhire/' + this.vanhireId + '/checkin/create', data).then((result) => {
                 return result
             })
         },
@@ -187,6 +199,7 @@ export default {
                 this.request.failed = false;
                 await this.saveCheckin();
 
+                this.$toastr.s("Checkin completed successfully");
                 this.request.saving = false;
                 this.request.completed = true;
             } catch (error) {
@@ -194,7 +207,7 @@ export default {
                 if (error.response) {
                     switch(error.response.status) {
                         case 403:
-                            this.request.message = 'You are not permitted to create a new checkin - is there already a checkin saved for this customer? ';
+                            this.$toastr.e('You are not permitted to create a new checkin - is there already a checkin saved for this customer? ');
                             break;
                         case 400:
                             this.request.message = 'Validation issue - please check form and re-submit.';
@@ -206,7 +219,7 @@ export default {
                                     });
                                 });
 
-                                this.scrollToFirstError();
+                                this.scrollToFirstError(this.request.message);
                             }
                             break;
                     }
@@ -223,7 +236,7 @@ export default {
                 }
             });
 
-            this.checkin.v_end_actual = this.vanhire.v_end;
+            this.vanhire.v_end_actual = this.vanhire.v_end;
         },
 
         getVans: function() {
@@ -258,7 +271,7 @@ export default {
                         }
                     });
 
-                    this.checkin.v_end_actual = this.vanhire.v_end;
+                    this.vanhire.v_end_actual = this.vanhire.v_end;
 
                     this.request.completed = true;
                 } else {

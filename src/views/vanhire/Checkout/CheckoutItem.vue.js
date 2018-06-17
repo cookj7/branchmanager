@@ -30,6 +30,8 @@ export default {
             vanhire_pristine: null,
             vans: [],
             vanhire: {
+                basket_id: 0,
+                vanhire_state_id: 0,
                 v_email: '',
                 v_forename: '',
                 v_surname: '',
@@ -76,13 +78,17 @@ export default {
         },
         summaryItems: function() {
             let items = [];
+            let dob = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+            let start = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
+            let end = this.vanhire.v_dob instanceof Date ? moment(this.vanhire.v_dob).format('YYYY-MM-DD') : this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1');
 
+            items.push({information: 'Booking reference: ', value: this.vanhire.basket_id});
             items.push({information: 'Name: ', value: this.vanhire.v_forename + ' ' + this.vanhire.v_surname});
             items.push({information: 'Email: ', value: this.vanhire.v_email});
             items.push({information: 'Address: ', value: (this.vanhire.v_address1 + ' ' + this.vanhire.v_address2 + ', ' + this.vanhire.v_address3 +  ', ' + this.vanhire.v_address4 + ', ' + this.vanhire.v_postcode).replace(/([,][ ]?)+/g, ', ')});
             items.push({information: 'Telephone (primary): ', value: this.vanhire.v_telephone1});
             items.push({information: 'Telephone (secondary): ', value: this.vanhire.v_telephone2});
-            items.push({information: 'Date of birth: ', value: this.vanhire.v_dob.replace(/^([\d]{4}[-][\d]{2}[-][\d]{2}).*$/, '$1')});
+            items.push({information: 'Date of birth: ', value: dob});
             items.push({information: 'License: ', value: this.vanhire.v_license});
             items.push({information: 'License confirmed', value: this.vanhire.v_license_confirmed == 1 ? 'YES' : 'NO'});
             const van = this.vans.find((item) => item.value === this.vanhire.vanhire_van_id);
@@ -91,8 +97,8 @@ export default {
             }
             items.push({information: 'Leaving vehicle: ', value: this.vanhire.v_leaving_vehicle == 1 ? 'Yes (' + this.vanhire.v_customer_reg + ')' : 'No'});
             items.push({information: 'Deposit: ', value: '£' + this.vanhire.v_deposit.toLocaleString('en-gb')});
-            items.push({information: 'Check-out date/time: ', value: this.vanhire.v_start});
-            items.push({information: 'Expected check-in date/time: ', value: this.vanhire.v_end});
+            items.push({information: 'Check-out date/time: ', value: start});
+            items.push({information: 'Expected check-in date/time: ', value: end});
 
             items.push({information: 'Condition of vehicle bodywork, windscreen, windows, lights', value: this.checkout.vc_condition_body});
             items.push({information: 'Condition of vehicle windscreen wiper blades', value: this.checkout.vc_condition_wipers});
@@ -137,7 +143,7 @@ export default {
 
                 this.vanhire_pristine = vanhire;
 
-                if (!vanhire.vanhire_state_id || vanhire.vanhire_state_id < 10) {
+                if (!vanhire.vanhire_state_id || vanhire.vanhire_state_id < 1) {
                     throw "Van hire has not passed approval";
                 }
 
@@ -210,7 +216,7 @@ export default {
             });
         },
 
-        scrollToFirstError() {
+        scrollToFirstError(message='') {
             Vue.nextTick(() => {
                 let element = document.querySelector('.is-invalid');
                 if (!element) {
@@ -224,6 +230,11 @@ export default {
                     top: domRect.top + document.documentElement.scrollTop - 60,
                     behavior: "smooth"
                 });
+
+                this.$toastr.e("There are " + this.errors.count() + " errors detected in the form - please update and retry.");
+                if (!!message) {
+                    this.$toastr.e("Error: " + message);
+                }
             })
         },
 
@@ -252,6 +263,8 @@ export default {
                 await this.saveVanhire();
                 await this.saveCheckout();
 
+                this.$toastr.s("Checkout completed successfully");
+
                 this.request.saving = false;
                 this.request.completed = true;
             } catch (error) {
@@ -259,7 +272,7 @@ export default {
                 if (error.response) {
                     switch(error.response.status) {
                         case 403:
-                            this.request.message = 'You are not permitted to create a new checkout - is there already a checkout saved for this customer? ';
+                            this.$toastr.e('You are not permitted to create a new checkout - is there already a checkout saved for this customer? ');
                             break;
                         case 400:
                             this.request.message = 'Validation issue - please check form and re-submit.';
@@ -271,7 +284,9 @@ export default {
                                     });
                                 });
 
-                                this.scrollToFirstError();
+
+
+                                this.scrollToFirstError(this.request.message);
                             }
                             break;
                     }

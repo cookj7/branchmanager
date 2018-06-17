@@ -11,6 +11,7 @@ export default {
                 ],
                 fields: [
                     {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'b_name', label: "branch", sortable: true, formatter: (value) => { return value.charAt(0).toUpperCase() + value.slice(1) }},
                     {key: 'name', sortable: true},
                     {key: 'v_start', label: 'start', sortable: true},
                     {key: 'v_end', label: 'end', sortable: true},
@@ -27,6 +28,7 @@ export default {
                 ],
                 fields: [
                     {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'b_name', label: "branch", sortable: true, formatter: (value) => { return value.charAt(0).toUpperCase() + value.slice(1) }},
                     {key: 'name', sortable: true},
                     {key: 'v_start', label: 'start', sortable: true},
                     {key: 'v_end', label: 'end', sortable: true},

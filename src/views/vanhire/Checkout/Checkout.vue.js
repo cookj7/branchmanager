@@ -11,6 +11,7 @@ export default {
                 ],
                 fields: [
                     {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'b_name', label: "branch", sortable: true, formatter: (value) => { return value.charAt(0).toUpperCase() + value.slice(1) }},
                     {key: 'name', sortable: true},
                     {key: 'v_start', label: 'start', sortable: true},
                     {key: 'v_end', label: 'end', sortable: true},
@@ -27,6 +28,7 @@ export default {
                 ],
                 fields: [
                     {key: 'basket_id', label: 'Order Reference', sortable: true},
+                    {key: 'b_name', label: "branch", sortable: true, formatter: (value) => { return value.charAt(0).toUpperCase() + value.slice(1) }},
                     {key: 'name', sortable: true},
                     {key: 'v_start', label: 'start', sortable: true},
                     {key: 'v_end', label: 'end', sortable: true},
@@ -51,7 +53,7 @@ export default {
             }
         },
         findPending (ctx) {
-            let promise = api.get('/vanhire/list', {results_per_page: this.pending.perPage, current_page: this.pending.currentPage, state: 10, sort: this.pending.sortBy, desc: this.pending.sortDesc ? 1 : 0})
+            let promise = api.get('/vanhire/list', {results_per_page: this.pending.perPage, current_page: this.pending.currentPage, state: [1, 10], sort: this.pending.sortBy, desc: this.pending.sortDesc ? 1 : 0})
 
             return promise.then((data) => {
                 const items = data.items

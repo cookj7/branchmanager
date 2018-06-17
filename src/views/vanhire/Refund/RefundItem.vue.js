@@ -11,7 +11,7 @@ export default {
             return this.vanhire.v_forename + ' ' + this.vanhire.v_surname;
         },
         bookingReference: function() {
-            return '@todo retrieve customer id';
+            return this.vanhire.basket_id;
         },
         telephoneNumber: function() {
             return this.vanhire.v_telephone1 + (!!this.vanhire.v_telephone2 ? " / " + this.vanhire.v_telephone2 : "");
@@ -22,6 +22,20 @@ export default {
         dateDue: function() {
             return this.vanhire.v_end;
         },
+        summaryItems: function() {
+            let items = [];
+
+            items.push({information: 'Name: ', value: this.vanhire.v_forename + ' ' + this.vanhire.v_surname});
+            items.push({information: 'Email: ', value: this.vanhire.v_email});
+            items.push({information: 'Address: ', value: (this.vanhire.v_address1 + ' ' + this.vanhire.v_address2 + ', ' + this.vanhire.v_address3 +  ', ' + this.vanhire.v_address4 + ', ' + this.vanhire.v_postcode).replace(/([,][ ]?)+/g, ', ')});
+            items.push({information: 'Telephone: ', value: this.vanhire.v_telephone1 + (!!this.vanhire.v_telephone2 ? ' / ' + this.vanhire.v_telephone2 : '')});
+            items.push({information: 'Deposit: ', value: '<span class="text-danger">£' + this.vanhire.v_deposit.toLocaleString('en-gb') + '</span>'});
+            items.push({information: 'Refunded: ', value: '<span class="text-success">£' + this.refund.vr_amount.toLocaleString('en-gb') + '</span>'});
+            items.push({information: 'Last 4 Digits: ', value: this.refund.vr_card_last});
+            items.push({information: 'Notes: ', value: this.refund.vr_notes});
+
+            return items;
+        }
     },
     data: function(){
         return {
@@ -33,8 +47,13 @@ export default {
                 completed: false,
                 message: ''
             },
+            summaryFields: [
+                {key: 'information'},
+                {key: 'value'},
+            ],
             vans: [],
             vanhire: {
+                basket_id: 0,
                 v_email: '',
                 v_forename: '',
                 v_surname: '',
@@ -78,7 +97,7 @@ export default {
             });
         },
 
-        scrollToFirstError() {
+        scrollToFirstError(message='') {
             Vue.nextTick(() => {
                 let element = document.querySelector('.is-invalid');
                 if (!element) {
@@ -92,6 +111,11 @@ export default {
                     top: domRect.top + document.documentElement.scrollTop - 60,
                     behavior: "smooth"
                 });
+
+                this.$toastr.e("There are " + this.errors.count() + " errors detected in the form - please update and retry.");
+                if (!!message) {
+                    this.$toastr.e("Error: " + message);
+                }
             })
         },
 
@@ -112,7 +136,7 @@ export default {
                 this.request.saving = true;
                 this.request.failed = false;
                 await this.saveRefund();
-
+                this.$toastr.s("Refund completed successfully");
                 this.request.saving = false;
                 this.request.completed = true;
             } catch (error) {
@@ -120,7 +144,7 @@ export default {
                 if (error.response) {
                     switch(error.response.status) {
                         case 403:
-                            this.request.message = 'You are not permitted to create a new refund - has the vehicle been checked in? Or has the refund already been made?';
+                            this.$toastr.e('You are not permitted to create a new refund - has the vehicle been checked in? Or has the refund already been made?');
                             break;
                         case 400:
                             this.request.message = 'Validation issue - please check form and re-submit.';
@@ -132,7 +156,7 @@ export default {
                                     });
                                 });
 
-                                this.scrollToFirstError();
+                                this.scrollToFirstError(this.request.message);
                             }
                             break;
                     }

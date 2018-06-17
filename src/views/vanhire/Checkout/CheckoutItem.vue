@@ -13,7 +13,7 @@
                             <div slot="header">
                                 <i class="fa fa-user"></i> <strong>Checkout Details</strong>
                                 <div class="pull-right">
-                                    <b-badge  pill variant="primary">Vanhire Checkout: Completed</b-badge>
+                                    <b-badge  pill variant="success"><i class="fa fa-check"></i> Vanhire Checkout: Completed</b-badge>
                                 </div>
 
                             </div>
@@ -42,12 +42,18 @@
                                 Once the information has loaded please fill in the check-out form below and click on submit
                                 to continue.
                             </p>
+                            <div>
+                                <b-alert :show="vanhire.vanhire_state_id == 1"  variant="warning">
+                                    <strong>Important:</strong> This order's documents have not been approved by the compliance team.  Please ensure the receipt of correct documentation before checking out a van.
+                                </b-alert>
+
+                            </div>
                             <b-form-group
                                     label="Booking reference"
                                     label-for="bookingReference"
                                     :label-cols="3"
                                     :horizontal="true">
-                                <b-form-input plaintext id="bookingReference" type="text" value="123-123"></b-form-input>
+                                <b-form-input plaintext id="bookingReference" type="text" :value="vanhire.basket_id"></b-form-input>
                             </b-form-group>
                             <b-form-group
                                     description="Enter the customer's email address."
@@ -525,17 +531,9 @@
                             </b-form-group>
 
                             <div slot="footer">
-                                <b-alert :show="errors.count() > 0" variant="danger">
-                                    There are <strong>{{errors.count()}}</strong> errors detected in the form
-                                </b-alert>
-                                <b-alert :show="request.failed" variant="danger">
-                                    The checkout could not be saved for the following reason:
-                                    <br><strong>{{ request.message }}</strong>
-                                </b-alert>
                                 <loader :loading="request.saving" message="Creating checkout ..."></loader>
                                 <b-button type="submit" size="sm" variant="primary" @click.prevent="createCheckout()" v-show="!request.saving"><i class="fa fa-dot-circle-o"></i> Checkout Now</b-button>
                                 <b-button type="reset" size="sm" variant="danger" @click.prevent="reset()" v-show="!request.saving"><i class="fa fa-ban"></i> Reset</b-button>
-
                             </div>
                         </b-card>
                     </b-col>

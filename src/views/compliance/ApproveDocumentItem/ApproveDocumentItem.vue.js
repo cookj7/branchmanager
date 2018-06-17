@@ -1,6 +1,6 @@
-import { Loader } from '@/components/'
-import api from '@/services/api'
-import { mapGetters } from 'vuex'
+import { Loader } from '@/components/';
+import api from '@/services/api';
+import { mapGetters } from 'vuex';
 
 export default {
     name: 'compliance-approve-document-item',
@@ -12,6 +12,7 @@ export default {
             loading: false,
             vanhireId: this.$route.params.id,
             vanhire: {
+                vanhire_state_id: 0,
                 v_email: '',
                 v_forename: '',
                 v_surname: '',
@@ -113,6 +114,18 @@ export default {
                 if (!reject) {
                     document.rejectionId = null;
                 }
+                return data;
+            });
+        },
+        approveBooking: function() {
+            return api.put('/vanhire/' + this.vanhireId + '/approve').then((data) => {
+                this.vanhire.vanhire_state_id = data.vanhire_state_id;
+                return data;
+            });
+        },
+        revertApproveBooking: function() {
+            return api.put('/vanhire/' + this.vanhireId + '/approve', {revert: true}).then((data) => {
+                this.vanhire.vanhire_state_id = data.vanhire_state_id;
                 return data;
             });
         },

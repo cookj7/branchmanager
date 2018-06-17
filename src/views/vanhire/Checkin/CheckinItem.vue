@@ -13,7 +13,7 @@
                             <div slot="header">
                                 <i class="fa fa-user"></i> <strong>Check-in Details</strong>
                                 <div class="pull-right">
-                                    <b-badge  pill variant="primary">Vanhire Check-in: Completed</b-badge>
+                                    <b-badge  pill variant="success"><i class="fa fa-check"></i> Vanhire Check-in: Completed</b-badge>
                                 </div>
 
                             </div>
@@ -50,13 +50,13 @@
                     <b-col>
                         <b-card class="card-accent-success">
                             <div slot="header">
-                                <i class="fa fa-file"></i> <strong>Documentation</strong>
+                                <i class="fa fa-clock-o"></i> <strong>Check-in time</strong>
                                 <div class="pull-right">
                                     <b-badge  pill variant="success">Vanhire Check-In: Section 2</b-badge>
                                 </div>
                             </div>
                             <p>
-                                Below is the information relating to the verification of the submitted customer documentation.
+                                Please specify the actual return time for the van.
                             </p>
                             <b-form-group
                                     description="Select the time (to the nearest 30 mins) that the van will be returned"
@@ -64,7 +64,7 @@
                                     label-for="v_end_actual"
                                     :label-cols="3"
                                     :horizontal="true">
-                                <date-picker v-model="checkin.v_end_actual" type="datetime" lang="en" :first-day-of-week="1" format="yyyy-MM-dd hh:mm" confirm :class="{'is-invalid' : errors.has('v_end_actual')}"></date-picker>
+                                <date-picker v-model="vanhire.v_end_actual" type="datetime" lang="en" :first-day-of-week="1" format="yyyy-MM-dd hh:mm" confirm :class="{'is-invalid' : errors.has('v_end_actual')}"></date-picker>
                                 <b-form-valid-feedback :style="{display: 'block'}">
                                     <i class="fa fa-info"></i> Expected return time: <strong>{{ vanhire.v_end }}</strong>
                                 </b-form-valid-feedback>
@@ -327,13 +327,6 @@
                             </b-form-group>
 
                             <div slot="footer">
-                                <b-alert :show="errors.count() > 0" variant="danger">
-                                    There are <strong>{{errors.count()}}</strong> errors detected in the form
-                                </b-alert>
-                                <b-alert :show="request.failed" variant="danger">
-                                    The checkout could not be saved for the following reason:
-                                    <br><strong>{{ request.message }}</strong>
-                                </b-alert>
                                 <b-button type="submit" size="sm" variant="primary" @click.prevent="createCheckin()" v-show="!request.saving"><i class="fa fa-dot-circle-o"></i> Check-in Now</b-button>
                                 <b-button type="reset" size="sm" variant="danger" v-show="!request.saving" @click.prevent="reset()"><i class="fa fa-ban"></i> Reset</b-button>
                             </div>

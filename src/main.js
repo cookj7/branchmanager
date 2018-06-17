@@ -13,6 +13,10 @@ import store from './store'
 import VueLocalStorage from './plugins/localstorage/'
 import VeeValidate from 'vee-validate';
 import DatePicker from 'vue2-datepicker';
+import Toastr from 'vue-toastr';
+require('vue-toastr/src/vue-toastr.scss');
+
+Vue.use(Toastr);
 
 Vue.use(DatePicker);
 
